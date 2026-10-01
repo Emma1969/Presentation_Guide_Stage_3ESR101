@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stage 1 (3ESR101) : guide de présentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F8FAF2; --surface:#FFFFFF; --ink:#1D2614; --muted:#56624A; --line:#D9E1CB;
+  --forest:#3D5E14; --lime:#8DC63F; --lime-soft:#EAF4D9;
+  --pst:#6EA21B; --pea:#0F7C85; --psu:#4A5DA8;
+  --alert:#A3202A; --alert-soft:#FBE9EA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141A0F; --surface:#1C2416; --ink:#EEF3E4; --muted:#A9B69A; --line:#334027;
+    --forest:#A9D66B; --lime:#8DC63F; --lime-soft:#253318;
+    --pst:#9BD44A; --pea:#4CC3CC; --psu:#9AA9F0; --alert:#F28B92; --alert-soft:#3A1C1F;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141A0F; --surface:#1C2416; --ink:#EEF3E4; --muted:#A9B69A; --line:#334027;
+  --forest:#A9D66B; --lime:#8DC63F; --lime-soft:#253318;
+  --pst:#9BD44A; --pea:#4CC3CC; --psu:#9AA9F0; --alert:#F28B92; --alert-soft:#3A1C1F;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:clamp(16px,1.15vw + 8px,20px);line-height:1.55;overflow:hidden}
+h1,h2,h3{font-family:var(--display);line-height:1.08;margin:0;letter-spacing:-0.01em}
+h2{font-size:clamp(1.8rem,3.4vw,3rem);font-weight:800;color:var(--forest);margin-bottom:.4em}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0 0 .8em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pea);outline-offset:3px;border-radius:4px}
+
+/* Structure du diaporama */
+.deck{position:relative;height:100%;display:flex;flex-direction:column}
+.stage{position:relative;flex:1;min-height:0}
+.slide{position:absolute;inset:0;overflow-y:auto;padding:clamp(1.2rem,4vw,3.5rem) clamp(1.2rem,6vw,5.5rem) 2rem;opacity:0;visibility:hidden;transform:translateX(24px);transition:opacity .35s ease,transform .35s ease,visibility 0s linear .35s}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease,transform .35s ease}
+.slide.before{transform:translateX(-24px)}
+.inner{max-width:1180px;margin:0 auto}
+.lead{font-size:1.15em;color:var(--muted);max-width:62ch}
+
+/* Barre de contrôle */
+.bar{display:flex;align-items:center;gap:.6rem;padding:.6rem clamp(.8rem,3vw,2rem);border-top:1px solid var(--line);background:var(--surface)}
+.bar .title{font-family:var(--display);font-weight:700;color:var(--muted);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.bar button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:.4rem .9rem;cursor:pointer;font-size:.9rem}
+.bar button:hover{border-color:var(--forest)}
+.count{font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--muted);min-width:4.5ch;text-align:center}
+.progress{height:4px;background:var(--line)}
+.progress span{display:block;height:100%;background:var(--lime);width:0;transition:width .35s ease}
+
+/* Menu du plan */
+.menu{position:fixed;inset:0;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);z-index:20;display:none;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 2rem) 1.5rem 2rem}
+.menu.open{display:block}
+.menu ol{max-width:760px;margin:1rem auto;padding:0;list-style:none;counter-reset:m}
+.menu li button{width:100%;text-align:left;display:flex;gap:1rem;align-items:baseline;border:0;border-bottom:1px solid var(--line);background:none;padding:.8rem .2rem;cursor:pointer;font-family:var(--display);font-size:1.15rem;font-weight:500}
+.menu li button:hover,.menu li button[aria-current="true"]{color:var(--forest)}
+.menu li button span{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem;min-width:2ch}
+.menu .close{display:block;margin:0 auto;max-width:760px;text-align:right}
+.menu .close button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:.4rem 1rem;cursor:pointer}
+
+/* Page titre */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:3rem;align-items:center;min-height:calc(100% - 1rem)}
+.hero h1{font-size:clamp(2.4rem,6vw,5.2rem);font-weight:800;color:var(--forest)}
+.hero .code{display:inline-block;font-family:var(--display);font-weight:700;background:var(--lime);color:#1D2614;padding:.15rem .7rem;border-radius:6px;margin-bottom:1.2rem}
+.hero .sub{font-size:1.25em;margin-top:1rem;color:var(--muted)}
+.hero .org{margin-top:2rem;font-size:.9rem;color:var(--muted);border-left:3px solid var(--lime);padding-left:1rem}
+.hint{margin-top:1.5rem;font-size:.85rem;color:var(--muted)}
+kbd{font-family:var(--body);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 .35em;background:var(--surface)}
+
+/* Triade */
+.triad svg{width:100%;max-width:440px;height:auto;display:block;margin:auto}
+.triad .node{cursor:pointer}
+.triad .node circle{transition:r .2s ease,stroke-width .2s ease}
+.triad .node:hover circle,.triad .node.on circle{stroke-width:6}
+.triad text{font-family:var(--display);font-weight:800;fill:#fff;pointer-events:none}
+.triad .lbl{font-family:var(--body);font-weight:400;fill:var(--muted);font-size:16px}
+
+/* Grilles et blocs */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.objectives{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:.2rem 2rem}
+.objectives li{padding:.55rem 0 .55rem 1.6rem;border-bottom:1px solid var(--line);position:relative}
+.objectives li::before{content:"";position:absolute;left:0;top:1rem;width:.7rem;height:.7rem;border-radius:50%;background:var(--lime)}
+.banner{background:var(--forest);color:var(--paper);padding:1rem 1.3rem;border-radius:10px;font-family:var(--display);font-weight:700;font-size:1.2rem;margin:1rem 0 1.5rem}
+:root[data-theme="dark"] .banner{color:#141A0F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .banner{color:#141A0F}}
+
+/* Onglets des rôles */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.tab{border:2px solid var(--c);background:transparent;border-radius:999px;padding:.45rem 1.1rem;cursor:pointer;font-family:var(--display);font-weight:700}
+.tab[aria-selected="true"]{background:var(--c);color:#fff}
+.panel{display:none;border-top:4px solid var(--c);background:var(--surface);border-radius:0 0 10px 10px;padding:1.2rem 1.4rem}
+.panel.on{display:block}
+.panel .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.4rem}
+.panel h3{color:var(--c);margin-bottom:.4rem}
+.panel ul{margin:0;padding-left:1.1rem}
+.panel li{margin-bottom:.35rem}
+
+/* Cartes d'activités */
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.1rem;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:.4rem}
+.act strong{font-family:var(--display);font-size:1.15rem;color:var(--forest)}
+.act small{color:var(--muted)}
+.act[aria-expanded="true"]{border-color:var(--forest);box-shadow:inset 0 -4px 0 var(--lime)}
+.detail{margin-top:1.2rem;background:var(--lime-soft);border-radius:10px;padding:1.2rem 1.4rem;min-height:9rem}
+.detail ul{margin:.3rem 0 0;padding-left:1.1rem}
+
+/* Calendrier */
+.timeline{display:grid;grid-template-columns:3fr 4fr 4fr;gap:.4rem;margin:1.2rem 0 .3rem}
+.phase{border:0;cursor:pointer;padding:1rem;text-align:left;background:var(--lime-soft);border-radius:8px;display:flex;flex-direction:column;gap:.2rem;position:relative}
+.phase b{font-family:var(--display);font-size:1.25rem}
+.phase span{font-size:.85rem;color:var(--muted)}
+.phase[aria-selected="true"]{background:var(--forest);color:var(--paper)}
+.phase[aria-selected="true"] span{color:inherit;opacity:.85}
+.weeks{display:grid;grid-template-columns:repeat(11,1fr);font-size:.75rem;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.cal{display:none;grid-template-columns:1fr 1.4fr 1fr;gap:1.4rem;margin-top:1.4rem}
+.cal.on{display:grid}
+.cal h3{color:var(--forest);margin-bottom:.4rem;font-size:1rem}
+.cal ul,.cal ol{margin:0;padding-left:1.1rem}
+.cal li{margin-bottom:.35rem}
+.milestone{display:inline-block;background:var(--alert-soft);color:var(--alert);font-weight:700;font-size:.85rem;padding:.1rem .5rem;border-radius:4px}
+
+/* Compétences */
+.comps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.comp{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;position:relative}
+.comp .id{font-family:var(--display);font-size:2.4rem;font-weight:800;color:var(--lime);line-height:1}
+.comp.risk{border-color:var(--alert)}
+.comp.risk .flag{position:absolute;top:.9rem;right:1rem;font-size:.75rem;font-weight:700;color:var(--alert)}
+.note{margin-top:1.2rem;padding:.9rem 1.2rem;border-left:4px solid var(--alert);background:var(--alert-soft);border-radius:0 8px 8px 0}
+
+/* Évaluation */
+.eval{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1.3rem 1.4rem}
+.eval h3{font-size:1.4rem;color:var(--forest);margin-bottom:.6rem}
+.flow{list-style:none;padding:0;margin:.8rem 0 0;counter-reset:f}
+.flow li{counter-increment:f;padding:.45rem 0 .45rem 2.4rem;position:relative}
+.flow li::before{content:counter(f);position:absolute;left:0;top:.4rem;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--forest);color:var(--paper);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.9rem}
+
+/* Travaux (accordéon) */
+details.work{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem;overflow:hidden}
+details.work summary{cursor:pointer;list-style:none;padding:1rem 1.2rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;font-family:var(--display);font-weight:700;font-size:1.15rem}
+details.work summary::-webkit-details-marker{display:none}
+details.work summary .when{font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);white-space:nowrap}
+details.work summary::after{content:"+";font-size:1.4rem;color:var(--forest);margin-left:.5rem}
+details.work[open] summary::after{content:"\2212"}
+details.work[open]{border-color:var(--forest)}
+details.work .body{padding:0 1.2rem 1.1rem}
+details.work ul{margin:.2rem 0 0;padding-left:1.1rem}
+.levels{display:flex;gap:.5rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.levels span{border:1px solid var(--line);border-radius:999px;padding:.2rem .8rem;font-size:.9rem;background:var(--surface)}
+
+/* Planification */
+.phases3{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1rem;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.ph{border:0;border-right:1px solid var(--line);background:var(--surface);padding:1.1rem;text-align:left;cursor:pointer}
+.ph:last-child{border-right:0}
+.ph b{display:block;font-family:var(--display);font-size:1.3rem;color:var(--forest)}
+.ph small{color:var(--muted)}
+.ph[aria-selected="true"]{background:var(--forest);color:var(--paper)}
+.ph[aria-selected="true"] b,.ph[aria-selected="true"] small{color:inherit}
+.phdetail{display:none;padding:1.2rem 0}
+.phdetail.on{display:block}
+.phdetail dl{display:grid;grid-template-columns:minmax(180px,1fr) 2.5fr;gap:.5rem 1.5rem;margin:0}
+.phdetail dt{font-weight:700;color:var(--forest)}
+.phdetail dd{margin:0;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
+.finalite{margin-top:1rem;font-style:italic;color:var(--muted)}
+
+/* Vidéo */
+.specs{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 1.4rem}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem}
+.spec .big{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--forest);line-height:1.1}
+.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+.steps li{counter-increment:s;padding:.6rem 0 .6rem 2.6rem;position:relative;border-bottom:1px solid var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.55rem;width:1.8rem;height:1.8rem;border-radius:50%;border:2px solid var(--forest);color:var(--forest);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.9rem}
+
+/* Rappels */
+.checks{list-style:none;padding:0;margin:0;columns:2;column-gap:2rem}
+.checks li{break-inside:avoid;margin-bottom:.4rem}
+.checks label{display:flex;gap:.7rem;align-items:flex-start;cursor:pointer;padding:.5rem .2rem;border-bottom:1px solid var(--line)}
+.checks input{width:1.2rem;height:1.2rem;margin-top:.2rem;accent-color:var(--pst);flex-shrink:0}
+.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.tally{margin-top:1rem;font-family:var(--display);font-weight:700;color:var(--forest)}
+
+.contact{font-size:1.1em;margin-top:1.5rem;line-height:1.8}
+.contact a{color:var(--pea)}
+
+@media (max-width:900px){
+  .hero,.two,.cal.on{grid-template-columns:1fr}
+  .hero .triad{order:-1;max-width:300px}
+  .objectives{grid-template-columns:1fr}
+  .acts,.comps,.specs{grid-template-columns:1fr 1fr}
+  .phases3{grid-template-columns:1fr}
+  .ph{border-right:0;border-bottom:1px solid var(--line)}
+  .phdetail dl{grid-template-columns:1fr}
+  .checks{columns:1}
+  .weeks{display:none}
+}
+@media (max-width:560px){
+  .acts,.comps,.specs{grid-template-columns:1fr}
+  .timeline{grid-template-columns:1fr}
+  .bar .title{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .slide,.progress span{transition:none!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="progress" aria-hidden="true"><span id="prog"></span></div>
+  <main class="stage" id="stage">
+
+    <!-- 1. Titre -->
+    <section class="slide" data-title="Accueil">
+      <div class="inner hero">
+        <div>
+          <span class="code">3ESR101</span>
+          <h1>Stage d'exploration du travail enseignant au secondaire</h1>
+          <p class="sub">Stage 1 : immersion dans les milieux de pratique</p>
+          <div class="org">Module en enseignement secondaire<br>Département des sciences de l'éducation, UQAC</div>
+          <p class="hint">Naviguez avec <kbd>←</kbd> <kbd>→</kbd> ou la barre du bas. <kbd>P</kbd> ouvre le plan, <kbd>F</kbd> active le plein écran.</p>
+        </div>
+        <div class="triad" aria-hidden="true">
+          <svg viewBox="-25 -45 450 460">
+            <polygon points="200,60 70,290 330,290" fill="none" stroke="var(--line)" stroke-width="3"/>
+            <text class="lbl" x="200" y="-14" text-anchor="middle">Personne stagiaire</text>
+            <g><circle cx="200" cy="60" r="52" fill="var(--pst)"/><text x="200" y="68" text-anchor="middle" font-size="26">PSt</text></g>
+            <g><circle cx="70" cy="290" r="52" fill="var(--pea)"/><text x="70" y="298" text-anchor="middle" font-size="26">PEA</text></g>
+            <g><circle cx="330" cy="290" r="52" fill="var(--psu)"/><text x="330" y="298" text-anchor="middle" font-size="26">PSU</text></g>
+            <text class="lbl" x="70" y="368" text-anchor="middle"><tspan x="70">Personne enseignante</tspan><tspan x="70" dy="19">associée</tspan></text>
+            <text class="lbl" x="330" y="368" text-anchor="middle"><tspan x="330">Personne superviseure</tspan><tspan x="330" dy="19">universitaire</tspan></text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Intention du stage -->
+    <section class="slide" data-title="Intention du stage">
+      <div class="inner">
+        <h2>Un premier pas dans la profession</h2>
+        <p class="lead">Axé sur l'observation, le stage 1 permet de confirmer son choix de carrière et de découvrir le fonctionnement concret de l'école. La PSt commence graduellement à participer à la vie de la classe, accompagnée par sa PEA et supervisée par sa PSU.</p>
+        <div class="banner">Objectif principal : développer les bases d'une pratique pédagogique réfléchie en confirmant son choix de carrière</div>
+        <ul class="objectives">
+          <li>Communiquer de manière appropriée selon les contextes</li>
+          <li>Se familiariser avec les caractéristiques de l'école</li>
+          <li>Découvrir les principales tâches du travail enseignant (classe et école)</li>
+          <li>Participer graduellement à la vie de la classe, sous la supervision de la PEA, pour des périodes de 10 à 20 minutes minimum</li>
+          <li>S'initier à établir une relation enseignant-élève</li>
+          <li>Établir les bases d'une identité professionnelle en lien avec les différentes tâches enseignantes</li>
+          <li>Analyser ses compétences professionnelles dans une perspective de développement</li>
+          <li>Faire preuve d'éthique professionnelle</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. La triade -->
+    <section class="slide" data-title="La triade">
+      <div class="inner two" style="align-items:center">
+        <div>
+          <h2>Trois personnes, une même démarche</h2>
+          <p class="lead">Le stage repose sur une approche réflexive et collaborative centrée sur la PSt. Touchez un rôle pour voir sa fonction dans la triade.</p>
+          <div id="triadInfo" class="detail" aria-live="polite"></div>
+        </div>
+        <div class="triad">
+          <svg viewBox="-25 -40 450 470" role="group" aria-label="Rôles de la triade">
+            <polygon points="200,70 70,300 330,300" fill="none" stroke="var(--line)" stroke-width="3"/>
+            <g class="node" data-role="pst" tabindex="0" role="button" aria-label="Personne stagiaire"><circle cx="200" cy="70" r="54" fill="var(--pst)" stroke="var(--pst)" stroke-opacity=".35"/><text x="200" y="79" text-anchor="middle" font-size="27">PSt</text></g>
+            <g class="node" data-role="pea" tabindex="0" role="button" aria-label="Personne enseignante associée"><circle cx="70" cy="300" r="54" fill="var(--pea)" stroke="var(--pea)" stroke-opacity=".35"/><text x="70" y="309" text-anchor="middle" font-size="27">PEA</text></g>
+            <g class="node" data-role="psu" tabindex="0" role="button" aria-label="Personne superviseure universitaire"><circle cx="330" cy="300" r="54" fill="var(--psu)" stroke="var(--psu)" stroke-opacity=".35"/><text x="330" y="309" text-anchor="middle" font-size="27">PSU</text></g>
+            <text class="lbl" x="200" y="-8" text-anchor="middle">Personne stagiaire</text>
+            <text class="lbl" x="70" y="380" text-anchor="middle"><tspan x="70">Personne enseignante</tspan><tspan x="70" dy="19">associée</tspan></text>
+            <text class="lbl" x="330" y="380" text-anchor="middle"><tspan x="330">Personne superviseure</tspan><tspan x="330" dy="19">universitaire</tspan></text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Rôles détaillés -->
+    <section class="slide" data-title="Rôles et responsabilités">
+      <div class="inner">
+        <h2>Qui fait quoi?</h2>
+        <div class="tabs" role="tablist" data-tabs="roles">
+          <button class="tab" role="tab" style="--c:var(--pst)" aria-selected="true" data-target="r-pst">PSt</button>
+          <button class="tab" role="tab" style="--c:var(--pea)" aria-selected="false" data-target="r-pea">PEA</button>
+          <button class="tab" role="tab" style="--c:var(--psu)" aria-selected="false" data-target="r-psu">PSU</button>
+        </div>
+
+        <div class="panel on" id="r-pst" style="--c:var(--pst)" role="tabpanel">
+          <div class="groups">
+            <div><h3>Avant le stage</h3><ul>
+              <li>Respecter les engagements de l'école et de la PEA dès l'attribution du stage</li>
+              <li>Prendre l'initiative de contacter la PEA pour une première rencontre</li>
+              <li>Fournir les documents requis (dont la vérification des antécédents judiciaires) dans les délais</li></ul></div>
+            <div><h3>Portfolio</h3><ul>
+              <li>Y déposer tous les documents et travaux</li>
+              <li>Le partager correctement avec la PEA et la PSU</li>
+              <li>Le publier pour rendre visibles les modifications</li></ul></div>
+            <div><h3>Pendant le stage</h3><ul>
+              <li>Respecter l'horaire convenu, le calendrier scolaire et l'horaire de la PEA</li>
+              <li>Aviser la PEA, la PSU et le bureau de la formation pratique de toute absence, puis rattraper les journées manquées</li>
+              <li>Réaliser les travaux demandés (risque d'échec aux C2, C11 et C13)</li></ul></div>
+            <div><h3>Éthique et collaboration</h3><ul>
+              <li>Confidentialité des informations sur les élèves, langage respectueux, code de vie et code vestimentaire</li>
+              <li>Partager les vidéos uniquement avec la triade</li>
+              <li>Collaborer avec tout le personnel et démontrer de l'autonomie</li>
+              <li>Signaler rapidement toute difficulté personnelle, pédagogique ou éthique</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel" id="r-pea" style="--c:var(--pea)" role="tabpanel">
+          <div class="groups">
+            <div><h3>Accueil et intégration</h3><ul>
+              <li>Préparer le séjour : lieu de travail, horaire, règlements</li>
+              <li>Faire visiter l'école et présenter la direction</li>
+              <li>Encourager l'observation d'autres personnes enseignantes</li>
+              <li>Communiquer sa planification chaque semaine</li>
+              <li>Informer la PSt lors d'évènements majeurs (tempête, panne, grève)</li></ul></div>
+            <div><h3>Pédagogie et supervision</h3><ul>
+              <li>Lire attentivement le guide de stage</li>
+              <li>Offrir des rétroactions régulières et constructives</li>
+              <li>Soutenir la progression graduelle vers l'autonomie</li>
+              <li>Collaborer avec la PSU à l'évaluation certificative, à partir de faits observables</li>
+              <li>Prévoir des échanges réguliers lors des journées en télétravail</li></ul></div>
+            <div><h3>Responsabilité et confidentialité</h3><ul>
+              <li>Conserver l'entière responsabilité professionnelle et légale de ses élèves</li>
+              <li>Partager les vidéos uniquement avec la triade</li>
+              <li>En cas de difficulté, informer la PSU pour qu'un plan d'intervention soit mis en place</li></ul></div>
+            <div><h3>Développement professionnel</h3><ul>
+              <li>Développer des habiletés pédagogiques et didactiques</li>
+              <li>Cultiver la rigueur, l'esprit critique et l'engagement</li></ul></div>
+          </div>
+        </div>
+
+        <div class="panel" id="r-psu" style="--c:var(--psu)" role="tabpanel">
+          <div class="groups">
+            <div><h3>Encadrement et soutien</h3><ul>
+              <li>Agir en responsable pédagogique de la formation</li>
+              <li>Lire les documents du stage et tenir compte des réalités du milieu</li>
+              <li>Effectuer les supervisions suivies de rencontres en triade</li>
+              <li>Mettre en place un plan d'intervention au besoin</li></ul></div>
+            <div><h3>Réflexion et analyse</h3><ul>
+              <li>Aider la PSt à faire des ponts entre les cours et la classe</li>
+              <li>Soutenir l'autonomie professionnelle</li>
+              <li>Accompagner la rédaction des travaux</li></ul></div>
+            <div><h3>Relations et collaboration</h3><ul>
+              <li>Se présenter à la réception de l'école avant chaque visite</li>
+              <li>Clarifier les rôles dès le début et favoriser la confiance dans la triade</li>
+              <li>Assurer le relai avec le bureau des stages ou la direction de module</li></ul></div>
+            <div><h3>Évaluation</h3><ul>
+              <li>Assumer la responsabilité institutionnelle de l'évaluation certificative</li>
+              <li>Justifier la décision de réussite ou d'échec</li>
+              <li>Verser le résultat dans l'intranet dans les délais</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Activités d'encadrement -->
+    <section class="slide" data-title="Encadrement et soutien">
+      <div class="inner">
+        <h2>Quatre formes d'accompagnement</h2>
+        <div class="acts" data-acts>
+          <button class="act" aria-expanded="true" data-act="sup"><strong>Supervision</strong><small>1 visite en présence</small></button>
+          <button class="act" aria-expanded="false" data-act="sem"><strong>Séminaire</strong><small>Réflexion entre PSt</small></button>
+          <button class="act" aria-expanded="false" data-act="red"><strong>Soutien aux travaux</strong><small>Tout au long du stage</small></button>
+          <button class="act" aria-expanded="false" data-act="tri"><strong>Rencontres en triade</strong><small>2 à 3 rencontres</small></button>
+        </div>
+        <div class="detail" id="actDetail" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- 6. Calendrier -->
+    <section class="slide" data-title="Calendrier du stage">
+      <div class="inner">
+        <h2>Le stage en trois temps</h2>
+        <p class="lead">Choisissez une période pour afficher ce qui s'y passe.</p>
+        <div class="timeline" role="tablist">
+          <button class="phase" role="tab" aria-selected="true" data-cal="c1"><b>Observer</b><span>Semaines 1 à 3</span></button>
+          <button class="phase" role="tab" aria-selected="false" data-cal="c2"><b>S'impliquer et se filmer</b><span>Semaines 4 à 7</span></button>
+          <button class="phase" role="tab" aria-selected="false" data-cal="c3"><b>Être supervisé et faire le bilan</b><span>Semaines 8 à 11</span></button>
+        </div>
+        <div class="weeks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span></div>
+
+        <div class="cal on" id="c1">
+          <div><h3>Ce que fait la PSt</h3>
+            <p><strong>Observation active, mais non participative</strong> pendant 5 jours obligatoires, en prenant des notes et en posant des questions à la PEA.</p></div>
+          <div><h3>À accomplir</h3><ul>
+            <li>Observer le travail de la PEA avant, pendant et après l'enseignement</li>
+            <li>Se renseigner sur son travail hors de l'école</li>
+            <li>Prendre connaissance des règles de la classe</li>
+            <li>Noter les stratégies de la PEA pour créer la relation avec les élèves</li>
+            <li>Se renseigner sur les organismes culturels du milieu</li>
+            <li>Brosser le portrait d'un groupe-classe</li>
+            <li>Se présenter à la direction adjointe</li></ul></div>
+          <div><h3>Ce que ça apporte</h3><ul>
+            <li>Intégration au contexte scolaire</li>
+            <li>Relation de confiance avec les élèves et la PEA</li>
+            <li>Appropriation des routines et de la gestion de classe</li></ul></div>
+        </div>
+
+        <div class="cal" id="c2">
+          <div><h3>Ce que fait la PSt</h3>
+            <p><strong>Observation participative et responsabilité d'enseignement progressive</strong>, sous la supervision constante de la PEA. Dès le 6e jour, la PSt s'implique activement (accueil, activités, correction de copies).</p>
+            <p><span class="milestone">Séminaire</span> enregistré sur Zoom avec la PSU et ses PSt</p></div>
+          <div><h3>La vidéo, étape par étape</h3><ol>
+            <li>Planifier avec la PEA le début d'une période (dès la cloche) suivi de 10 min d'enseignement</li>
+            <li>Filmer en montrant les élèves de dos ou seulement la PSt</li>
+            <li>Déposer la planification et le lien Panopto au moins 24 h avant la triade</li>
+            <li>Analyser la vidéo avec le document prévu</li>
+            <li><span class="milestone">Triade</span> sur Zoom : la PSt présente son analyse</li>
+            <li>Remplir les lignes « Réflexions issues du séminaire » et « Constats issus de l'analyse de la vidéo »</li></ol></div>
+          <div><h3>Ce que ça apporte</h3><ul>
+            <li>Documentation de la pratique</li>
+            <li>Transition graduelle vers l'autonomie</li>
+            <li>Expérimentation de stratégies dans un contexte sécurisé</li>
+            <li>Échanges entre PSt et réflexion collective</li>
+            <li>Développement de l'identité enseignante</li></ul></div>
+        </div>
+
+        <div class="cal" id="c3">
+          <div><h3>Ce que fait la PSt</h3>
+            <p>Poursuit l'observation participative et la responsabilité d'enseignement progressive, et continue de remplir la collecte de données.</p></div>
+          <div><h3>Vers l'évaluation</h3><ol>
+            <li>Planifier avec la PEA une responsabilité d'enseignement de 20 min ou plus, située dans le déroulement complet de la période</li>
+            <li>Déposer la planification au moins 24 h avant la supervision</li>
+            <li>Rédiger son bilan de stage 1</li>
+            <li><span class="milestone">Supervision</span> en classe par la PSU (20 min ou plus)</li>
+            <li><span class="milestone">Triade</span> : la PSt présente son bilan, suivi de l'évaluation certificative</li></ol></div>
+          <div><h3>Ce que ça apporte</h3><ul>
+            <li>Points de vue de la PSt, de la PEA et de la PSU sur chaque compétence</li>
+            <li>Rétroactions constructives</li>
+            <li>Évaluation certificative du stage</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Compétences -->
+    <section class="slide" data-title="Compétences visées">
+      <div class="inner">
+        <h2>Six compétences en développement</h2>
+        <p class="lead">Issues du Référentiel de compétences professionnelles de la profession enseignante (MEQ, 2020).</p>
+        <div class="comps">
+          <div class="comp"><div class="id">C1</div><p>Agir en tant que médiatrice ou médiateur d'éléments de culture</p></div>
+          <div class="comp risk"><span class="flag">Liée aux travaux</span><div class="id">C2</div><p>Maitriser la langue d'enseignement</p></div>
+          <div class="comp"><div class="id">C6</div><p>Gérer le fonctionnement du groupe-classe</p></div>
+          <div class="comp risk"><span class="flag">Liée aux travaux</span><div class="id">C11</div><p>S'engager dans un développement professionnel continu et dans la vie de la profession</p></div>
+          <div class="comp"><div class="id">C12</div><p>Mobiliser le numérique</p></div>
+          <div class="comp risk"><span class="flag">Liée aux travaux</span><div class="id">C13</div><p>Agir en accord avec les principes éthiques de la profession</p></div>
+        </div>
+        <p class="note">Des manquements dans les travaux peuvent entrainer un échec aux compétences C2, C11 et C13. Le séminaire porte d'ailleurs sur C2 et C13.</p>
+      </div>
+    </section>
+
+    <!-- 8. Évaluation -->
+    <section class="slide" data-title="Évaluation">
+      <div class="inner">
+        <h2>Comment la PSt est évaluée</h2>
+        <div class="two">
+          <div class="eval">
+            <h3>Évaluation formative</h3>
+            <p>En cours de stage, les rétroactions verbales et écrites de la PEA et de la PSU, jumelées à l'autoévaluation de la PSt, aident à repérer ses forces et ses défis.</p>
+            <p>La PSt compare ses acquis aux attentes du stage, se fixe de nouveaux objectifs et ajuste sa pratique. On vise ici le développement de compétences métacognitives : réfléchir sur son action et prendre en charge son propre développement (Malo et Monfette, 2024).</p>
+          </div>
+          <div class="eval">
+            <h3>Évaluation certificative</h3>
+            <p>Elle se réalise en triade, sous la responsabilité de la PSU.</p>
+            <ol class="flow">
+              <li>La PEA et la PSU indiquent chacune par écrit si les attentes sont satisfaites</li>
+              <li>La PSt présente oralement son bilan de stage</li>
+              <li>La triade discute de façon constructive</li>
+              <li>La PSU rédige la version finale à partir des deux évaluations, du bilan et des travaux</li>
+              <li>Le document signé est envoyé au secrétariat : <a href="mailto:sm39@uqac.ca">sm39@uqac.ca</a></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Travaux -->
+    <section class="slide" data-title="Travaux à réaliser">
+      <div class="inner">
+        <h2>Cinq travaux dans le portfolio</h2>
+        <p>Chaque travail est évalué selon trois niveaux :</p>
+        <div class="levels"><span>Excellent</span><span>Satisfaisant</span><span>À améliorer</span></div>
+
+        <details class="work"><summary>Collecte de données en vue du bilan <span class="when">Dès le jour 1, en continu</span></summary>
+          <div class="body"><p>Un tableau, disponible dans le portfolio dès la première journée, pour que la PSU suive l'évolution de l'expérience. On y consigne :</p><ul>
+            <li>les observations de la phase préparatoire (travail enseignant, relation avec les élèves)</li>
+            <li>la réflexion sur les règles de la classe et l'autoportrait du cours 3EDU100</li>
+            <li>les planifications, le séminaire (C2 et C13) et l'analyse de la vidéo</li>
+            <li>le développement des six compétences</li></ul></div></details>
+
+        <details class="work"><summary>Portrait d'un groupe-classe <span class="when">Semaines 1 à 3</span></summary>
+          <div class="body"><p>Comprendre rapidement les caractéristiques du groupe (dynamique, ambiance, besoins) à partir d'observations en classe, d'échanges avec les élèves et la PEA, et de l'analyse de travaux ou de productions d'élèves.</p></div></details>
+
+        <details class="work"><summary>Deux planifications <span class="when">Semaines 4 à 7, puis 8 à 10</span></summary>
+          <div class="body"><ul>
+            <li><strong>Responsabilité filmée :</strong> début de la période et activité de 10 minutes (20 min maximum au total)</li>
+            <li><strong>Responsabilité supervisée :</strong> activité de 20 min ou plus, située dans le déroulement complet de la période</li></ul>
+            <p>À remettre à la PSU au moins 24 h avant la triade ou la supervision, avec le gabarit de planification du stage 1.</p></div></details>
+
+        <details class="work"><summary>Analyse d'une vidéo <span class="when">Semaines 4 à 7</span></summary>
+          <div class="body"><ul>
+            <li>Décrire la situation (contexte, objectifs, organisation)</li>
+            <li>Identifier les points forts et les points à améliorer</li>
+            <li>Analyser sa posture et son impact sur la dynamique de classe</li>
+            <li>Relier les observations aux concepts vus à l'université (gestion de classe, différenciation, communication)</li>
+            <li>Synthétiser le tout pour le présenter à la PEA et à la PSU</li></ul></div></details>
+
+        <details class="work"><summary>Bilan du stage 1 <span class="when">Fin du stage</span></summary>
+          <div class="body"><p>Une synthèse cohérente, critique et représentative du développement professionnel, construite à partir de la collecte de données et organisée selon les six compétences (C1, C2, C6, C11, C12, C13). Elle est présentée en triade lors de l'évaluation certificative.</p></div></details>
+      </div>
+    </section>
+
+    <!-- 10. Planification -->
+    <section class="slide" data-title="Planifier une séance">
+      <div class="inner">
+        <h2>Les trois phases d'une planification</h2>
+        <p class="lead">D'après Monney et al. (2020). Chaque séance, comme chaque séquence, suit ces trois phases.</p>
+        <div class="phases3" role="tablist">
+          <button class="ph" role="tab" aria-selected="true" data-ph="p1"><b>Contextualisation</b><small>Mettre l'élève en situation d'apprentissage</small></button>
+          <button class="ph" role="tab" aria-selected="false" data-ph="p2"><b>Réalisation</b><small>Construire et mobiliser les connaissances</small></button>
+          <button class="ph" role="tab" aria-selected="false" data-ph="p3"><b>Intégration</b><small>Consolider, transférer, approfondir</small></button>
+        </div>
+        <div class="phdetail on" id="p1"><dl>
+          <dt>Groupe d'élèves</dt><dd>Tenir compte des niveaux, intérêts, antécédents et besoins spécifiques</dd>
+          <dt>Objectifs et métacognition (avant la tâche)</dt><dd>Dire clairement ce que les élèves vont apprendre et pourquoi c'est important</dd>
+          <dt>Connaissances antérieures</dt><dd>Vérifier ce qu'ils savent déjà et faire le pont avec les nouveaux contenus</dd>
+          <dt>Motivation et engagement</dt><dd>Capter l'attention par une question, un défi, une situation réelle ou une accroche</dd>
+          <dt>Ressources</dt><dd>Préparer le matériel, les outils et les supports visuels</dd>
+          <dt>Cadre et attentes</dt><dd>Expliquer les modalités de travail et les critères d'évaluation</dd></dl>
+          <p class="finalite">Finalité : situer les élèves dans un contexte clair, pertinent et motivant.</p></div>
+        <div class="phdetail" id="p2"><dl>
+          <dt>Activités d'apprentissage</dt><dd>Tâches, exercices ou projets, individuels ou en groupe, liés aux compétences ciblées</dd>
+          <dt>Interaction et échange</dt><dd>Discussions, débats, résolution de problèmes entre élèves et avec l'enseignant</dd>
+          <dt>Suivi et métacognition (pendant la tâche)</dt><dd>Observer, guider et ajuster grâce à l'évaluation formative en temps réel</dd>
+          <dt>Diversification des méthodes</dt><dd>Apprentissage collaboratif, par projet, jeux de rôle, etc.</dd>
+          <dt>Autonomie</dt><dd>Encourager l'initiative, la recherche et l'esprit critique</dd></dl>
+          <p class="finalite">Finalité : amener les élèves à construire activement leur savoir, soutenus et guidés.</p></div>
+        <div class="phdetail" id="p3"><dl>
+          <dt>Consolidation</dt><dd>Vérifier que les savoirs sont acquis, par des révisions ou des évaluations</dd>
+          <dt>Transfert</dt><dd>Utiliser les compétences dans des contextes différents ou plus complexes</dd>
+          <dt>Métacognition (après la tâche)</dt><dd>Prendre conscience des stratégies utilisées et des erreurs pour s'ajuster</dd>
+          <dt>Évaluation finale</dt><dd>Mesurer l'acquisition, avec autoévaluation ou évaluation par les pairs</dd>
+          <dt>Synthèse et réinvestissement</dt><dd>Relier les notions entre elles et les réinvestir dans des situations concrètes</dd></dl>
+          <p class="finalite">Finalité : transférer les apprentissages et renforcer l'autonomie.</p></div>
+      </div>
+    </section>
+
+    <!-- 11. Vidéo -->
+    <section class="slide" data-title="La vidéo">
+      <div class="inner">
+        <h2>Préparer la responsabilité filmée</h2>
+        <div class="specs">
+          <div class="spec"><div class="big">20 min</div>Durée maximale de la vidéo</div>
+          <div class="spec"><div class="big">Cloche + 10 min</div>Le début de la période, puis 10 minutes d'enseignement</div>
+          <div class="spec"><div class="big">De dos</div>Filmer les élèves de dos, ou seulement la PSt</div>
+        </div>
+        <ol class="steps">
+          <li>Élaborer la planification avec la PEA à l'aide du gabarit</li>
+          <li>Filmer la séance en respectant la confidentialité des élèves</li>
+          <li>Déposer la planification et le lien Panopto dans le portfolio au moins 24 h avant la triade</li>
+          <li>Supprimer la vidéo de son infonuagique personnelle une fois déposée sur Panopto</li>
+          <li>Analyser la vidéo, puis la présenter en triade sur Zoom</li>
+        </ol>
+        <p class="note">Les vidéos ne sont partagées qu'avec les membres de la triade, peu importe qui les a réalisées.</p>
+      </div>
+    </section>
+
+    <!-- 12. Rappels -->
+    <section class="slide" data-title="Rappels essentiels">
+      <div class="inner">
+        <h2>Avant de commencer</h2>
+        <p class="lead">Une liste à cocher pour la PSt. Rien n'est enregistré ici : cette liste sert juste de repère pendant cette présentation.</p>
+        <ul class="checks" id="checks">
+          <li><label><input type="checkbox"><span>Documents de vérification des antécédents judiciaires remis</span></label></li>
+          <li><label><input type="checkbox"><span>Premier contact pris avec la PEA</span></label></li>
+          <li><label><input type="checkbox"><span>Portfolio créé, partagé avec la PEA et la PSU, puis publié</span></label></li>
+          <li><label><input type="checkbox"><span>Tableau de collecte de données déposé dès le jour 1</span></label></li>
+          <li><label><input type="checkbox"><span>Horaire du stage et calendrier scolaire consultés</span></label></li>
+          <li><label><input type="checkbox"><span>Code de vie et code vestimentaire de l'école lus</span></label></li>
+          <li><label><input type="checkbox"><span>Procédure d'absence connue : aviser PEA, PSU et bureau de la formation pratique</span></label></li>
+          <li><label><input type="checkbox"><span>Date du séminaire notée (l'enregistrement ne remplace pas la présence)</span></label></li>
+        </ul>
+        <p class="tally" id="tally" aria-live="polite">0 sur 8</p>
+      </div>
+    </section>
+
+    <!-- 13. Fin -->
+    <section class="slide" data-title="Questions">
+      <div class="inner hero">
+        <div>
+          <h1>Des questions?</h1>
+          <div class="contact">
+            Secrétariat du module en enseignement secondaire<br>
+            Local H4-1410<br>
+            <a href="mailto:sm_enseignement-secondaire@uqac.ca">sm_enseignement-secondaire@uqac.ca</a><br>
+            418 545-5011, poste 2246
+          </div>
+          <p class="hint">Bon stage à toutes et à tous!</p>
+        </div>
+        <div class="triad" aria-hidden="true">
+          <svg viewBox="0 0 400 360">
+            <polygon points="200,60 70,290 330,290" fill="var(--lime-soft)" stroke="var(--line)" stroke-width="3"/>
+            <g><circle cx="200" cy="60" r="52" fill="var(--pst)"/><text x="200" y="68" text-anchor="middle" font-size="26">PSt</text></g>
+            <g><circle cx="70" cy="290" r="52" fill="var(--pea)"/><text x="70" y="298" text-anchor="middle" font-size="26">PEA</text></g>
+            <g><circle cx="330" cy="290" r="52" fill="var(--psu)"/><text x="330" y="298" text-anchor="middle" font-size="26">PSU</text></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bar" aria-label="Navigation de la présentation">
+    <button id="menuBtn" aria-haspopup="dialog">Plan</button>
+    <span class="title" id="curTitle"></span>
+    <button id="themeBtn" aria-label="Changer le thème">Thème</button>
+    <button id="fsBtn">Plein écran</button>
+    <button id="prev" aria-label="Diapositive précédente">Précédent</button>
+    <span class="count" id="count"></span>
+    <button id="next" aria-label="Diapositive suivante">Suivant</button>
+  </nav>
+</div>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Plan de la présentation">
+  <div class="close"><button id="menuClose">Fermer</button></div>
+  <ol id="menuList"></ol>
+</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const total=slides.length;
+  let i=0;
+  const $=id=>document.getElementById(id);
+
+  function go(n){
+    n=Math.max(0,Math.min(total-1,n));
+    slides.forEach((s,k)=>{
+      s.classList.toggle('active',k===n);
+      s.classList.toggle('before',k<n);
+      s.setAttribute('aria-hidden',k!==n);
+    });
+    i=n;
+    $('count').textContent=(n+1)+' / '+total;
+    $('curTitle').textContent=slides[n].dataset.title;
+    $('prog').style.width=((n+1)/total*100)+'%';
+    $('prev').disabled=n===0; $('next').disabled=n===total-1;
+    slides[n].scrollTop=0;
+    try{history.replaceState(null,'','#'+(n+1));}catch(e){}
+    document.querySelectorAll('#menuList button').forEach((b,k)=>b.setAttribute('aria-current',k===n));
+  }
+
+  // Plan
+  slides.forEach((s,k)=>{
+    const li=document.createElement('li');
+    const b=document.createElement('button');
+    b.innerHTML='<span>'+(k+1)+'</span>'+s.dataset.title;
+    b.onclick=()=>{go(k);closeMenu();};
+    li.appendChild(b); $('menuList').appendChild(li);
+  });
+  function openMenu(){$('menu').classList.add('open');$('menuClose').focus();}
+  function closeMenu(){$('menu').classList.remove('open');$('menuBtn').focus();}
+  $('menuBtn').onclick=openMenu; $('menuClose').onclick=closeMenu;
+
+  $('prev').onclick=()=>go(i-1);
+  $('next').onclick=()=>go(i+1);
+
+  $('fsBtn').onclick=()=>{
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{});}
+    else{document.exitFullscreen&&document.exitFullscreen();}
+  };
+  $('themeBtn').onclick=()=>{
+    const r=document.documentElement;
+    const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme=dark?'light':'dark';
+  };
+
+  document.addEventListener('keydown',e=>{
+    const tag=(e.target.tagName||'').toLowerCase();
+    if($('menu').classList.contains('open')){ if(e.key==='Escape')closeMenu(); return; }
+    if(tag==='input')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||(e.key===' '&&tag!=='button'&&tag!=='summary')){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home')go(0);
+    else if(e.key==='End')go(total-1);
+    else if(e.key==='p'||e.key==='P')openMenu();
+    else if(e.key==='f'||e.key==='F')$('fsBtn').click();
+  });
+
+  // Balayage tactile
+  let sx=null,sy=null;
+  $('stage').addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  $('stage').addEventListener('touchend',e=>{
+    if(sx===null)return;
+    const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(i+(dx<0?1:-1));
+    sx=null;
+  });
+
+  // Triade interactive
+  const roles={
+    pst:['Personne stagiaire (PSt)','Elle développe activement ses compétences professionnelles. Elle analyse ses pratiques, ses réussites comme ses défis, pour s\'approprier savoirs, savoir-faire et savoir-être.','var(--pst)'],
+    pea:['Personne enseignante associée (PEA)','Elle représente le milieu scolaire et facilite l\'intégration de la PSt à l\'école. Elle l\'accueille dans sa classe, lui offre des rétroactions et soutient sa progression vers l\'autonomie.','var(--pea)'],
+    psu:['Personne superviseure universitaire (PSU)','Elle représente l\'université et assure le suivi pédagogique en lien avec les objectifs du programme. Elle supervise, accompagne la rédaction des travaux et porte la responsabilité de l\'évaluation certificative.','var(--psu)']
+  };
+  function showRole(k){
+    const r=roles[k];
+    $('triadInfo').innerHTML='<h3 style="color:'+r[2]+';margin-bottom:.4rem">'+r[0]+'</h3><p style="margin:0">'+r[1]+'</p>';
+    document.querySelectorAll('.triad .node').forEach(n=>n.classList.toggle('on',n.dataset.role===k));
+  }
+  document.querySelectorAll('.triad .node').forEach(n=>{
+    n.addEventListener('click',()=>showRole(n.dataset.role));
+    n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();showRole(n.dataset.role);}});
+  });
+  $('triadInfo').innerHTML='<p style="margin:0">Cette dynamique en triade garantit la cohérence de la formation et soutient la construction progressive de l\'identité professionnelle.</p>';
+
+  // Onglets génériques
+  function tabs(selector,attr,panelClass){
+    const btns=[...document.querySelectorAll(selector)];
+    btns.forEach(b=>b.addEventListener('click',()=>{
+      btns.forEach(x=>{
+        const on=x===b;
+        x.setAttribute('aria-selected',on);
+        document.getElementById(x.dataset[attr]).classList.toggle(panelClass,on);
+      });
+    }));
+  }
+  tabs('[data-tabs="roles"] .tab','target','on');
+  tabs('.phase','cal','on');
+  tabs('.ph','ph','on');
+
+  // Activités d'encadrement
+  const acts={
+    sup:'<h3>Supervision</h3><p>Au minimum une supervision en présence de 20 minutes d\'enseignement ou plus, suivie d\'une rencontre en triade. Elle offre un accompagnement personnalisé et des retours constructifs.</p>',
+    sem:'<h3>Séminaire de soutien et de réflexion</h3><p>Un moment structuré, enregistré sur Zoom, qui peut se tenir en dehors des deux jours de stage. Il porte sur la C2 (langue d\'enseignement) et la C13 (éthique). Il permet de :</p><ul><li>briser l\'isolement et échanger entre PSt</li><li>prendre du recul sur ses pratiques</li><li>partager stratégies et ressources</li><li>relier la théorie à la pratique</li></ul><p style="margin-top:.6rem"><strong>L\'enregistrement ne compense jamais une absence.</strong></p>',
+    red:'<h3>Soutien à la rédaction et à la pratique réflexive</h3><p>Tout au long du stage, la PSU :</p><ul><li>clarifie la structure, les critères et les objectifs des travaux</li><li>propose des échéanciers (plan, ébauche, version finale) et des questions guides</li><li>oriente vers les situations les plus riches à analyser</li><li>commente les travaux avec des pistes d\'amélioration précises</li></ul>',
+    tri:'<h3>Rencontres en triade</h3><p>Deux à trois rencontres pour aligner les attentes et transformer les difficultés en occasions d\'apprentissage :</p><ul><li><strong>Analyse de la vidéo</strong> sur Zoom, enregistrée</li><li><strong>Suivi de la supervision</strong>, avec l\'évaluation certificative</li><li>Une <strong>troisième rencontre</strong> si l\'évaluation certificative n\'a pas eu lieu lors du suivi de la supervision</li></ul>'
+  };
+  const actBtns=[...document.querySelectorAll('.act')];
+  function showAct(k){
+    actBtns.forEach(b=>b.setAttribute('aria-expanded',b.dataset.act===k));
+    $('actDetail').innerHTML=acts[k];
+  }
+  actBtns.forEach(b=>b.addEventListener('click',()=>showAct(b.dataset.act)));
+  showAct('sup');
+
+  // Liste à cocher
+  const boxes=[...document.querySelectorAll('#checks input')];
+  const tally=()=>{const n=boxes.filter(b=>b.checked).length;$('tally').textContent=n===boxes.length?'Tout est prêt!':n+' sur '+boxes.length;};
+  boxes.forEach(b=>b.addEventListener('change',tally));
+
+  const start=parseInt((location.hash||'').slice(1),10);
+  go(isNaN(start)?0:start-1);
+})();
+</script>
+</body>
+</html>
